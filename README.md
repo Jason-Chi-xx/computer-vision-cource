@@ -1,2 +1,4 @@
 # computer-vision-cource
-the repository of all projects in computer vision cource
+The repository of all projects in computer vision cource
+
+
