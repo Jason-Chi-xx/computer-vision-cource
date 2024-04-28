@@ -16,7 +16,7 @@ def train(model, X, Y, val_X, val_Y, batch_size, epoches, lr_schedule, weight_de
         val_losses.append(val_loss)
         val_accs.append(val_acc)
         if val_acc > max_acc:
-            pickle.dump(model,open("./Model_save/best_trained_model.dat","wb"))
+            pickle.dump(model,open("./model_save/best_trained_model.dat","wb"))
         if epoch%10 == 0:
             print("Training step: Epoch {}/{}: Loss={}, Accuracy={}".format(epoch, epoches, loss, acc))
         train_losses.append(loss)
@@ -26,7 +26,6 @@ def train(model, X, Y, val_X, val_Y, batch_size, epoches, lr_schedule, weight_de
 
 
 def parameter_sweep_hidden_layer():
-    f = open("./hidden_layer_log.txt","w")
     #测试最佳hidden layer dim
     lr_sche=[100,200,0.1,0.01]  #lr初始设置为200个epoch都是0.1
     batch_size = 256
@@ -50,7 +49,6 @@ def parameter_sweep_hidden_layer():
             testY = utils.to_onehot(testY)
             train_loss, train_acc, v_loss, v_acc, W= train(model, trainX, trainY, valX, valY, batch_size, epoches,lr_sche,weight_decay)
             v_acc_list.append(max(v_acc))
-            f.write("Hidden layer dim={} + {}, max accuracy is {}".format(int(i),int(j),max(v_acc)) + "\n")
             end_time = time.time()
             used_time = end_time - start_time
             print(f"it comsumes {round(used_time,3)} s")
@@ -58,7 +56,6 @@ def parameter_sweep_hidden_layer():
     ax = fig.add_subplot(1, 1, 1, projection='3d')
     x = [[i] * len(hidden_layer_list_2) for i in hidden_layer_list_1]
     y = [[i for i in hidden_layer_list_2] for _ in range(len(hidden_layer_list_1))]
-    # x, y = np.meshgrid(x,y)
     Z = np.array(v_acc_list).reshape(len(hidden_layer_list_1), len(hidden_layer_list_2))
     ax.plot_surface(x, y, Z, rstride=1, cstride=1,
                        linewidth=0, antialiased=False)
@@ -102,7 +99,7 @@ def parameter_sweep_weight_decay(hidden_layer_1,hidden_layer_2,lr):
     lr_sche=[100,200,lr,lr/10]
     batch_size = 256
     epoches = 300
-    weight_decay_list=[0.00001,0.00005,0.0001,0.0005,0.001,0.01]
+    weight_decay_list=[0.00001,0.0001,0.001,0.01]
     v_acc_list=[]
     np.random.seed(4)
     model=mlp_model.MLP_model(hidden_layer_1,hidden_layer_2)
@@ -208,6 +205,8 @@ def parse_args():
                         help='number of epochs to train')
     parser.add_argument("--weight_decay", type=int, default=0.001,
                         help="weight decay parameter lambda")
+    parser.add_argument("--model_path",type=str, default="./model_save/best_trained_model.dat",
+                        help="path to save the trained model")
     args = parser.parse_args()
     return args
 def main():
@@ -226,10 +225,11 @@ def main():
     
     # visualization of the training process 
     m=plot_model(args.hidden_layer_1, args.hidden_layer_2 ,args.lr,args.weight_decay)
-    pickle.dump(m,open("./Model_save/trained_model.dat","wb"))
+    pickle.dump(m,open("./model_save/best_trained_model.dat","wb"))
     
     # test
-    accuracy = Test(m)
+    model = load_model(args.model_path)
+    accuracy = Test(model)
     print("test accuracy: {}".fromat(accuracy))
     
     
