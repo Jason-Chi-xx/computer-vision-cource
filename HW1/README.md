@@ -9,4 +9,4 @@ python main.py
 ```
 to run the program
 
-The checkpoints will be saved in the folder model\_save. The visualization results will be saved in the folder new_plots
+The checkpoints will be saved in the folder model\_save. The visualization results of sweeping will be saved in the folder new_plots and the visualization of training process and weight will be saved in the folder plot.
