@@ -230,7 +230,7 @@ def main():
     
     # visualization of the training process 
     m=plot_model(args.hidden_layer_1, args.hidden_layer_2 ,args.lr,args.weight_decay)
-    pickle.dump(m,open("./model_save/best_trained_model.dat","wb"))
+    pickle.dump(m,open("./model_save/best_trained_model.dat","rb"))
     
     # test
     model = load_model(args.model_path)
