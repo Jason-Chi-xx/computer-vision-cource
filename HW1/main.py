@@ -5,6 +5,8 @@ from matplotlib import pyplot as plt
 import pickle
 import time
 import argparse
+import os
+
 def train(model, X, Y, val_X, val_Y, batch_size, epoches, lr_schedule, weight_decay):
     #输入sample和各个参数，训练model参数
     max_acc = 0.
@@ -211,6 +213,9 @@ def parse_args():
     return args
 def main():
     args = parse_args()
+    os.makedirs("model_save",exist_ok=True)
+    os.makedirs("new_plots",exist_ok=True)
+    os.makedirs("plot",exist_ok=True)
     # sweeping hidden layers
     hidden_layer_1, hidden_layer_2,best_accuracy = parameter_sweep_hidden_layer()
     print("hidden layer {} + {} yield the best accuracy".format(hidden_layer_1,hidden_layer_2,best_accuracy))
